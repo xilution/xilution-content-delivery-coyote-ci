@@ -6,4 +6,4 @@ phases:
       nodejs: 12
   build:
     commands:
-      - echo building
+      - echo verifying
