@@ -8,9 +8,19 @@ sourceDir=${2}
 currentDir=$(pwd)
 cd "${sourceDir}" || false
 
-commands=$(jq -r ".build.${stageName}.commands[] | @base64" <./xilution.json)
-execute_commands "$commands"
-distDir=$(jq -r ".build.distDir" <./xilution.json)
-cd "${distDir}" || exit
+commands=$(jq -r ".builds?.${stageName}?.commands[]? | @base64" <./xilution.json)
+execute_commands "${commands}"
+
+distDir=$(jq -r ".builds?.distDir?" <./xilution.json)
+
+if [[ "${distDir}" == "null" ]]; then
+  echo "Unable to find distribution directory."
+  exit 1
+fi
+
+cd "${distDir}" || false
+
 zip -r ../dist.zip .
 mv ../dist.zip "${currentDir}"
+
+cd "${currentDir}" || false

@@ -15,6 +15,6 @@ phases:
   build:
     commands:
       - |
-        . ./scripts/deploy-down.sh \
+        ./scripts/deploy-down.sh \
           $COYOTE_PIPELINE_ID \
           $STAGE_NAME

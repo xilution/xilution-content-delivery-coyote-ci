@@ -4,10 +4,10 @@ buildOutputDir=${1}
 pipelineId=${2}
 stageName=${3}
 
-cd "${buildOutputDir}" || exit
+cd "${buildOutputDir}" || false
 mkdir ./temp
 mv ./artifacts.zip ./temp
-cd ./temp || exit
+cd ./temp || false
 unzip artifacts.zip
 rm -rf artifacts.zip
 unzip dist.zip

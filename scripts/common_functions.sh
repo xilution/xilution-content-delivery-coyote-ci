@@ -1,28 +1,27 @@
 #!/bin/bash
 
-export_assume_role_credentials () {
+wait_for_site_to_be_ready() {
 
-  awsAccountId=${1}
-  awsRole=${2}
+  siteUrl=${1}
+  count=0
+  sleepSeconds=5
+  maxAttempts=60
 
-  aws sts assume-role \
-    --role-arn arn:aws:iam::"$awsAccountId":role/"$awsRole" \
-    --role-session-name xilution-client-session >./aws-creds.json
+  while [[ $(curl -s -o /dev/null -w '%{http_code}' "${siteUrl}") != "200" && "${count}" < "${maxAttempts}" ]]; do
+    sleep ${sleepSeconds}
+    count=$((count + 1))
+  done
 
-  awsAccessKeyId=$(cat <./aws-creds.json | jq -r ".Credentials.AccessKeyId")
-  export AWS_ACCESS_KEY_ID=$awsAccessKeyId
-  awsSecretAccessKey=$(cat <./aws-creds.json | jq -r ".Credentials.SecretAccessKey")
-  export AWS_SECRET_ACCESS_KEY=$awsSecretAccessKey
-  awsSessionToken=$(cat <./aws-creds.json | jq -r ".Credentials.SessionToken")
-  export AWS_SESSION_TOKEN=$awsSessionToken
+  if [[ "$count" == "${maxAttempts}" ]]; then
+    aws codebuild stop-build --id "${CODEBUILD_BUILD_ID}"
+  fi
 }
 
-execute_commands () {
+execute_commands() {
 
   commands=${1}
 
-  for command in $commands
-  do
-    echo "$command" | base64 --decode | bash
+  for command in ${commands}; do
+    echo "${command}" | base64 --decode | bash
   done
 }
