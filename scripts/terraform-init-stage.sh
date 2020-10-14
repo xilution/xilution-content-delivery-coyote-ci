@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/bash -ex
 
-awsAccountId=${1}
-pipelineId=${2}
-stageName=${3}
+awsAccountId=${CLIENT_AWS_ACCOUNT}
+pipelineId=${COYOTE_PIPELINE_ID}
+stageName=${STAGE_NAME}
 
 terraform init \
   -backend-config="key=xilution-content-delivery-coyote/${pipelineId}/${stageName}/terraform.tfstate" \

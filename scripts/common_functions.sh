@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 wait_for_site_to_be_ready() {
 

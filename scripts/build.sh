@@ -1,26 +1,26 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 . ./scripts/common_functions.sh
 
-stageName=${1}
-sourceDir=${2}
+stageName=${STAGE_NAME}
+sourceDir=${CODEBUILD_SRC_DIR_SourceCode}
 
 currentDir=$(pwd)
 cd "${sourceDir}" || false
 
-commands=$(jq -r ".builds?.${stageName}?.commands[]? | @base64" <./xilution.json)
+commands=$(jq -r ".builds.${stageName}.commands[] | @base64" <./xilution.json)
 execute_commands "${commands}"
 
-distDir=$(jq -r ".builds?.distDir?" <./xilution.json)
+buildDir=$(jq -r ".builds.buildDir" <./xilution.json)
 
-if [[ "${distDir}" == "null" ]]; then
-  echo "Unable to find distribution directory."
+if [[ "${buildDir}" == "null" ]]; then
+  echo "Unable to find build directory."
   exit 1
 fi
 
-cd "${distDir}" || false
+cd "${buildDir}" || false
 
-zip -r ../dist.zip .
-mv ../dist.zip "${currentDir}"
+zip -r ../build.zip .
+mv ../build.zip "${currentDir}"
 
 cd "${currentDir}" || false

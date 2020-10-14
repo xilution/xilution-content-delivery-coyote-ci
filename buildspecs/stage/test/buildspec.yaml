@@ -6,9 +6,4 @@ phases:
       nodejs: 12
   build:
     commands:
-      - |
-        ./scripts/test.sh \
-          $COYOTE_PIPELINE_ID \
-          $STAGE_NAME \
-          $CLIENT_AWS_REGION \
-          $CODEBUILD_SRC_DIR_SourceCode
+      - ./scripts/test.sh

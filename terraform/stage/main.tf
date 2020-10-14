@@ -5,7 +5,6 @@ resource "aws_s3_bucket" "static_content_bucket" {
     index_document = "index.html"
   }
   tags = {
-    xilution_organization_id = var.organization_id
     originator               = "xilution.com"
   }
 }
