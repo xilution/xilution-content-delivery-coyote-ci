@@ -5,6 +5,7 @@ pipelineId=${COYOTE_PIPELINE_ID}
 stageName=${STAGE_NAME}
 
 cd "${buildOutputDir}" || false
+ls
 mkdir ./temp
 mv ./artifacts.zip ./temp
 cd ./temp || false
