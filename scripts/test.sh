@@ -13,7 +13,7 @@ siteUrl="http://xilution-coyote-${pipelineId:0:8}-${stageNameLower}-web-content.
 wait_for_site_to_be_ready "${siteUrl}"
 
 currentDir=$(pwd)
-cd "$sourceDir" || false
+cd "${sourceDir}" || false
 
 testDetails=$(jq -r ".tests.${stageName}[] | @base64" <./xilution.json)
 
