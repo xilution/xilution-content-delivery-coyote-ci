@@ -4,11 +4,11 @@
 
 pipelineId=${COYOTE_PIPELINE_ID}
 stageName=${STAGE_NAME}
-awsAccountId=${CLIENT_AWS_REGION}
+awsRegion=${CLIENT_AWS_REGION}
 sourceDir=${CODEBUILD_SRC_DIR_SourceCode}
 
 stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
-siteUrl="http://xilution-coyote-${pipelineId:0:8}-${stageNameLower}-web-content.s3-website-${awsAccountId}.amazonaws.com"
+siteUrl="http://xilution-coyote-${pipelineId:0:8}-${stageNameLower}-web-content.s3-website-${awsRegion}.amazonaws.com"
 
 wait_for_site_to_be_ready "${siteUrl}"
 
