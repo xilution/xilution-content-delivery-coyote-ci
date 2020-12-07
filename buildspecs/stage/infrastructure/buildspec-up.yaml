@@ -9,3 +9,4 @@ phases:
     commands:
       - ./scripts/terraform-plan-stage.sh
       - ./scripts/terraform-apply-stage.sh
+      - ./scripts/additional-infrastructure-up-stage.sh

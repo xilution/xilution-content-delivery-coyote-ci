@@ -8,3 +8,4 @@ phases:
   build:
     commands:
       - ./scripts/terraform-destroy-trunk.sh
+      - ./scripts/additional-infrastructure-down-trunk.sh

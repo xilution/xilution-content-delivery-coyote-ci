@@ -24,3 +24,5 @@ zip -r ../build.zip .
 mv ../build.zip "${currentDir}"
 
 cd "${currentDir}" || false
+
+echo "All Done!"
