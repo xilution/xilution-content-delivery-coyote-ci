@@ -1,11 +1,18 @@
-data "aws_region" "current" {}
-
 data "aws_iam_role" "cloudwatch-events-rule-invocation-role" {
   name = "xilution-cloudwatch-events-rule-invocation-role"
 }
 
 data "aws_lambda_function" "metrics-reporter-lambda" {
   function_name = "xilution-client-metrics-reporter-lambda"
+}
+
+# Source Bucket
+
+resource "aws_s3_bucket" "fox-source-bucket" {
+  bucket = "xilution-coyote-${substr(var.coyote_pipeline_id, 0, 8)}-source-code"
+  tags = {
+    originator = "xilution.com"
+  }
 }
 
 # Metrics
@@ -22,7 +29,7 @@ resource "aws_cloudwatch_event_rule" "coyote-cloudwatch-every-ten-minute-event-r
   schedule_expression = "rate(10 minutes)"
   role_arn            = data.aws_iam_role.cloudwatch-events-rule-invocation-role.arn
   tags = {
-    originator               = "xilution.com"
+    originator = "xilution.com"
   }
 }
 

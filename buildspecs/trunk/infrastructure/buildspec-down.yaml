@@ -4,8 +4,8 @@ phases:
   pre_build:
     commands:
       - . ./scripts/assume-role.sh
-      - ./scripts/terraform-init-trunk.sh
   build:
     commands:
-      - ./scripts/terraform-destroy-trunk.sh
-      - ./scripts/additional-infrastructure-down-trunk.sh
+      - ./scripts/delete-coyote-source-bucket-contents.sh
+      - ./scripts/additional-infrastructure-trunk.sh down
+      - ./scripts/terraform-trunk.sh down

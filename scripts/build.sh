@@ -2,27 +2,34 @@
 
 . ./scripts/common_functions.sh
 
-stageName=${STAGE_NAME}
+pipelineId=${COYOTE_PIPELINE_ID}
 sourceDir=${CODEBUILD_SRC_DIR_SourceCode}
+sourceVersion=${COMMIT_ID}
+stageName=${STAGE_NAME}
+stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
 
-currentDir=$(pwd)
+echo "pipelineId = ${pipelineId}"
+echo "sourceDir = ${sourceDir}"
+echo "sourceVersion = ${sourceVersion}"
+
 cd "${sourceDir}" || false
 
-commands=$(jq -r ".builds.${stageName}.commands[] | @base64" <./xilution.json)
-execute_commands "${commands}"
-
-buildDir=$(jq -r ".builds.buildDir" <./xilution.json)
-
+buildDir=$(jq -r ".build.buildDir" <./xilution.json)
 if [[ "${buildDir}" == "null" ]]; then
   echo "Unable to find build directory."
   exit 1
 fi
 
+commands=$(jq -r ".build.commands[] | @base64" <./xilution.json)
+execute_commands "${commands}"
+
+sourceCodeBucket="s3://xilution-fox-${pipelineId:0:8}-source-code/"
+webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
+
 cd "${buildDir}" || false
+zip -r "${sourceDir}/${webContentZipFileName}" .
+cd "${sourceDir}" || false
 
-zip -r ../build.zip .
-mv ../build.zip "${currentDir}"
-
-cd "${currentDir}" || false
+aws s3 cp "./${webContentZipFileName}" "${sourceCodeBucket}"
 
 echo "All Done!"
