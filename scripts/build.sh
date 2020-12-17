@@ -23,7 +23,7 @@ fi
 commands=$(jq -r ".build.commands[] | @base64" <./xilution.json)
 execute_commands "${commands}"
 
-sourceCodeBucket="s3://xilution-fox-${pipelineId:0:8}-source-code/"
+sourceCodeBucket="s3://xilution-coyote-${pipelineId:0:8}-source-code/"
 webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
 
 cd "${buildDir}" || false

@@ -6,7 +6,7 @@ sourceVersion=${COMMIT_ID}
 stageName=${STAGE_NAME}
 stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
 
-sourceCodeBucket="s3://xilution-fox-${pipelineId:0:8}-source-code/"
+sourceCodeBucket="s3://xilution-coyote-${pipelineId:0:8}-source-code/"
 webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
 
 aws s3 cp "${sourceCodeBucket}${webContentZipFileName}" .
