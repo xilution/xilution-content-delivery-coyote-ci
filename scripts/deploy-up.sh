@@ -1,6 +1,5 @@
 #!/bin/bash -ex
 
-buildOutputDir=${CODEBUILD_SRC_DIR_BuildOutput}
 pipelineId=${COYOTE_PIPELINE_ID}
 sourceVersion=${COMMIT_ID}
 stageName=${STAGE_NAME}
