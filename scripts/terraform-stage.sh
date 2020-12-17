@@ -4,31 +4,6 @@ direction=${1}
 awsAccountId=${CLIENT_AWS_ACCOUNT}
 pipelineId=${COYOTE_PIPELINE_ID}
 stageName=${STAGE_NAME}
-sourceVersion=${COMMIT_ID}
-
-sourceDir=${CODEBUILD_SRC_DIR_SourceCode}
-currentDir=$(pwd)
-cd "${sourceDir}" || false
-handler=$(jq -r ".handler" <./xilution.json)
-runtime=$(jq -r ".runtime" <./xilution.json)
-endpoints=$(jq -r ".api.endpoints[] | @base64" <./xilution.json)
-cd "${currentDir}" || false
-routeKeys=""
-INDEX=0
-for endpoint in ${endpoints}; do
-  method=$(echo "${endpoint}" | base64 --decode | jq -r ".method")
-  methodUpper=$(echo "${method}" | tr '[:lower:]' '[:upper:]')
-  path=$(echo "${endpoint}" | base64 --decode | jq -r ".path")
-
-  if [[ "${INDEX}" == 0 ]]; then
-    routeKeys="\"${methodUpper} ${path}\""
-  else
-    routeKeys="${routeKeys}, \"${methodUpper} ${path}\""
-  fi
-
-  INDEX=${INDEX}+1
-done
-echo routeKeys = ${routeKeys}
 
 terraform init \
   -backend-config="key=xilution-content-delivery-coyote/${pipelineId}/${stageName}/terraform.tfstate" \
@@ -48,10 +23,6 @@ if [[ "${direction}" == "up" ]]; then
     -var="xilution_aws_region=$XILUTION_AWS_REGION" \
     -var="xilution_environment=$XILUTION_ENVIRONMENT" \
     -var="xilution_pipeline_type=$PIPELINE_TYPE" \
-    -var="lambda_runtime=${runtime}" \
-    -var="lambda_handler=${handler}" \
-    -var="source_version=${sourceVersion}" \
-    -var="route_keys=[${routeKeys}]" \
     ./terraform/stage
 
   terraform apply \
@@ -64,10 +35,6 @@ if [[ "${direction}" == "up" ]]; then
     -var="xilution_aws_region=$XILUTION_AWS_REGION" \
     -var="xilution_environment=$XILUTION_ENVIRONMENT" \
     -var="xilution_pipeline_type=$PIPELINE_TYPE" \
-    -var="lambda_runtime=${runtime}" \
-    -var="lambda_handler=${handler}" \
-    -var="source_version=${sourceVersion}" \
-    -var="route_keys=[${routeKeys}]" \
     -auto-approve \
     ./terraform/stage
 
@@ -83,10 +50,6 @@ elif [[ "${direction}" == "down" ]]; then
     -var="xilution_aws_region=$XILUTION_AWS_REGION" \
     -var="xilution_environment=$XILUTION_ENVIRONMENT" \
     -var="xilution_pipeline_type=$PIPELINE_TYPE" \
-    -var="lambda_runtime=${runtime}" \
-    -var="lambda_handler=${handler}" \
-    -var="source_version=${sourceVersion}" \
-    -var="route_keys=[${routeKeys}]" \
     -auto-approve \
     ./terraform/stage
 
