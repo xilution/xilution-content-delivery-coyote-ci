@@ -6,4 +6,5 @@ phases:
       nodejs: 12
   build:
     commands:
+      - ./scripts/validate-config.sh xilution-content-delivery-coyote
       - ./scripts/verify.sh

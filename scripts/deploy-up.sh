@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 pipelineId=${COYOTE_PIPELINE_ID}
 sourceVersion=${COMMIT_ID}
