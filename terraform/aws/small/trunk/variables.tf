@@ -9,7 +9,7 @@ variable "product_id" {
   default     = "c3d91f28476048d38a7259a9eddd1025"
 }
 
-variable "coyote_pipeline_id" {
+variable "pipeline_id" {
   type        = string
   description = "The Coyote Pipeline ID"
 }
@@ -39,7 +39,7 @@ variable "xilution_environment" {
   description = "The Xilution Environment"
 }
 
-variable "xilution_pipeline_type" {
+variable "pipeline_type" {
   type        = string
   description = "The Pipeline Type"
 }

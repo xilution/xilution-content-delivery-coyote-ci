@@ -9,7 +9,8 @@ data "aws_lambda_function" "metrics-reporter-lambda" {
 # Source Bucket
 
 resource "aws_s3_bucket" "fox-source-bucket" {
-  bucket = "xilution-coyote-${substr(var.coyote_pipeline_id, 0, 8)}-source-code"
+  bucket = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-source-code"
+  force_destroy = true
   tags = {
     originator = "xilution.com"
   }
@@ -25,7 +26,7 @@ resource "aws_lambda_permission" "allow-coyote-cloudwatch-every-ten-minute-event
 }
 
 resource "aws_cloudwatch_event_rule" "coyote-cloudwatch-every-ten-minute-event-rule" {
-  name                = "xilution-coyote-${substr(var.coyote_pipeline_id, 0, 8)}-cloudwatch-event-rule"
+  name                = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-cloudwatch-event-rule"
   schedule_expression = "rate(10 minutes)"
   role_arn            = data.aws_iam_role.cloudwatch-events-rule-invocation-role.arn
   tags = {
@@ -75,7 +76,7 @@ resource "aws_cloudwatch_event_target" "coyote-cloudwatch-event-target" {
 # Dashboards
 
 resource "aws_cloudwatch_dashboard" "coyote-cloudwatch-dashboard" {
-  dashboard_name = "xilution-coyote-${substr(var.coyote_pipeline_id, 0, 8)}-dashboard"
+  dashboard_name = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-dashboard"
 
   dashboard_body = <<-EOF
   {

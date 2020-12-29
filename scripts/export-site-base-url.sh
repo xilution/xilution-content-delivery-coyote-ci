@@ -1,10 +1,23 @@
 #!/bin/bash -e
 
-pipelineId=${COYOTE_PIPELINE_ID}
+[ -z "$PIPELINE_ID" ] && echo "Didn't find PIPELINE_ID env var." && exit 1
+[ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
+[ -z "$CLIENT_AWS_REGION" ] && echo "Didn't find CLIENT_AWS_REGION env var." && exit 1
+
+pipelineId=${PIPELINE_ID}
 stageName=${STAGE_NAME}
 awsRegion=${CLIENT_AWS_REGION}
 
-stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
-site_base_url="http://xilution-coyote-${pipelineId:0:8}-${stageNameLower}-web-content.s3-website-${awsRegion}.amazonaws.com"
+echo "pipelineId = ${pipelineId}"
+echo "stageName = ${stageName}"
+echo "awsRegion = ${awsRegion}"
 
-export SITE_BASE_URL=${site_base_url}
+stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
+pipelineIdShort=$(echo "${pipelineId}" | cut -c1-8)
+
+echo "stageNameLower = ${stageNameLower}"
+echo "pipelineIdShort = ${pipelineIdShort}"
+
+base_url="http://xilution-coyote-${pipelineIdShort}-${stageNameLower}-web-content.s3-website-${awsRegion}.amazonaws.com"
+
+export BASE_URL=${base_url}

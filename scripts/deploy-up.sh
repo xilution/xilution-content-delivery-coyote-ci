@@ -1,11 +1,16 @@
 #!/bin/bash -e
 
-pipelineId=${COYOTE_PIPELINE_ID}
+[ -z "$PIPELINE_ID" ] && echo "Didn't find PIPELINE_ID env var." && exit 1
+[ -z "$COMMIT_ID" ] && echo "Didn't find COMMIT_ID env var." && exit 1
+[ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
+
+pipelineId=${PIPELINE_ID}
 sourceVersion=${COMMIT_ID}
 stageName=${STAGE_NAME}
+pipelineIdShort=$(echo "${pipelineId}" | cut -c1-8)
 stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
 
-sourceCodeBucket="s3://xilution-coyote-${pipelineId:0:8}-source-code/"
+sourceCodeBucket="s3://xilution-coyote-${pipelineIdShort}-source-code/"
 webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
 
 aws s3 cp "${sourceCodeBucket}${webContentZipFileName}" .
@@ -16,7 +21,7 @@ cd ./temp || false
 unzip ./${webContentZipFileName}
 rm -rf ./${webContentZipFileName}
 
-webContentBucket="s3://xilution-coyote-${pipelineId:0:8}-${stageNameLower}-web-content"
+webContentBucket="s3://xilution-coyote-${pipelineIdShort}-${stageNameLower}-web-content"
 aws s3 cp . "${webContentBucket}" --recursive --include "*" --acl public-read
 
 echo "All Done!"
