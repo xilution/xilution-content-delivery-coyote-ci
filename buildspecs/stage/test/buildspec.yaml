@@ -8,7 +8,6 @@ phases:
     commands:
       - ./scripts/echo-brand.sh
       - export PIPELINE_ID=$COYOTE_PIPELINE_ID
-      - . ./scripts/export-base-url.sh
       - . ./scripts/export-xilution-config.sh
   build:
     commands:

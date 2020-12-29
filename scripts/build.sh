@@ -6,7 +6,7 @@
 [ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
 [ -z "$XILUTION_CONFIG" ] && echo "Didn't find XILUTION_CONFIG env var." && exit 1
 
-. ./scripts/common_functions.sh
+. ./scripts/common-functions.sh
 
 pipelineId=${PIPELINE_ID}
 sourceDir=${CODEBUILD_SRC_DIR_SourceCode}

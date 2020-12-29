@@ -12,4 +12,10 @@ export ADD_INFRA_TERRAFORM_PATH_TRUNK=$(echo "${XILUTION_CONFIG}" | base64 --dec
 if [[ "${PIPELINE_TYPE}" == "AWS_SMALL" ]]; then
   export TERRAFORM_PROVIDER="aws"
   export TERRAFORM_PATH="./terraform/${TERRAFORM_PROVIDER}/small/${phase}"
+elif [[ "${PIPELINE_TYPE}" == "AWS_MEDIUM" ]]; then
+  export TERRAFORM_PROVIDER="aws"
+  export TERRAFORM_PATH="./terraform/${TERRAFORM_PROVIDER}/medium/${phase}"
+else
+  echo "Unrecognized pipeline type: ${PIPELINE_TYPE}"
+  exit 1
 fi
