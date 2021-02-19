@@ -3,7 +3,7 @@
 [ -z "$CLIENT_AWS_ACCOUNT" ] && echo "Didn't find CLIENT_AWS_ACCOUNT env var." && exit 1
 
 awsAccountId=${CLIENT_AWS_ACCOUNT}
-awsRole=xilution-developer-role
+awsRole=xilution-agent-role
 
 echo "awsAccountId = ${awsAccountId}"
 echo "awsRole = ${awsRole}"
