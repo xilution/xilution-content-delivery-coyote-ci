@@ -20,9 +20,9 @@ echo "sourceDir = ${sourceDir}"
 echo "sourceVersion = ${sourceVersion}"
 
 commands=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.commands[] | @base64")
+execute_commands "${commands}"
 
 cd "${sourceDir}" || false
-execute_commands "${commands}"
 
 buildDir=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.buildDir")
 if [[ "${buildDir}" == "null" ]]; then
