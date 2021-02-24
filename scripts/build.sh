@@ -19,12 +19,12 @@ echo "pipelineId = ${pipelineId}"
 echo "sourceDir = ${sourceDir}"
 echo "sourceVersion = ${sourceVersion}"
 
-commands=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.commands[] | @base64")
+commands=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.${stageName}.commands[] | @base64")
 execute_commands "${commands}"
 
 cd "${sourceDir}" || false
 
-buildDir=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.buildDir")
+buildDir=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.${stageName}.buildDir")
 if [[ "${buildDir}" == "null" ]]; then
   echo "Unable to find build directory."
   exit 1
