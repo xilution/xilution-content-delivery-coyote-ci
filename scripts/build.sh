@@ -18,11 +18,13 @@ stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
 echo "pipelineId = ${pipelineId}"
 echo "sourceDir = ${sourceDir}"
 echo "sourceVersion = ${sourceVersion}"
+echo "stageName = ${stageName}"
+echo "stageNameLower = ${stageNameLower}"
+
+cd "${sourceDir}" || false
 
 commands=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.${stageName}.commands[] | @base64")
 execute_commands "${commands}"
-
-cd "${sourceDir}" || false
 
 buildDir=$(echo "${XILUTION_CONFIG}" | base64 --decode | jq -r ".build.${stageName}.buildDir")
 if [[ "${buildDir}" == "null" ]]; then
@@ -35,6 +37,7 @@ webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
 zip -r "${sourceDir}/${webContentZipFileName}" .
 
 cd "${sourceDir}" || false
+
 pipelineIdShort=$(echo "${pipelineId}" | cut -c1-8)
 sourceCodeBucket="s3://xilution-coyote-${pipelineIdShort}-source-code/"
 aws s3 cp "./${webContentZipFileName}" "${sourceCodeBucket}"
