@@ -5,6 +5,8 @@
 [ -z "$3" ] && echo "The third argument should be the Terraform module path." && exit 1
 [ -z "$4" ] && echo "The fourth argument should be the Terraform state file name." && exit 1
 [ -z "$5" ] && echo "The fifth argument should be the Terraform provider (aws)." && exit 1
+[ -z "$6" ] && echo "The sixth argument should be the Xilution product category." && exit 1
+[ -z "$7" ] && echo "The seventh argument should be the Xilution product code." && exit 1
 [ -z "$PIPELINE_ID" ] && echo "Didn't find PIPELINE_ID env var." && exit 1
 [ -z "$CLIENT_AWS_ACCOUNT" ] && echo "Didn't find CLIENT_AWS_ACCOUNT env var." && exit 1
 
@@ -13,6 +15,8 @@ direction=${2}
 tfPath=${3}
 tfStateFileName=${4}
 tfProvider=${5}
+productCategory=${6}
+productName=${7}
 
 echo "phase: ${phase}"
 echo "direction: ${direction}"
@@ -27,16 +31,16 @@ fi
 
 if [[ "${tfProvider}" == "aws" ]]; then
   if [[ "${phase}" == "trunk" ]]; then
-    terraform init \
-      -backend-config="key=xilution-content-delivery-coyote/${PIPELINE_ID}/${tfStateFileName}" \
+    terraform init --no-color \
+      -backend-config="key=xilution-${productCategory}-${productName}/${PIPELINE_ID}/${tfStateFileName}" \
       -backend-config="bucket=xilution-terraform-backend-state-bucket-${CLIENT_AWS_ACCOUNT}" \
       -backend-config="dynamodb_table=xilution-terraform-backend-lock-table" \
       ${tfPath}
     bash ./scripts/build-aws-trunk-terraform-vars.sh
   elif [[ "${phase}" == "stage" ]]; then
     [ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
-    terraform init \
-      -backend-config="key=xilution-content-delivery-coyote/${PIPELINE_ID}/${STAGE_NAME}/${tfStateFileName}" \
+    terraform init --no-color \
+      -backend-config="key=xilution-${productCategory}-${productName}/${PIPELINE_ID}/${STAGE_NAME}/${tfStateFileName}" \
       -backend-config="bucket=xilution-terraform-backend-state-bucket-${CLIENT_AWS_ACCOUNT}" \
       -backend-config="dynamodb_table=xilution-terraform-backend-lock-table" \
       ${tfPath}
@@ -51,11 +55,11 @@ else
 fi
 
 if [[ "${direction}" == "up" ]]; then
-  terraform plan -var-file=tfvars.json -out=tfplan ${tfPath}
-  terraform apply tfplan
+  terraform plan --no-color -var-file=tfvars.json -out=tfplan ${tfPath}
+  terraform apply --no-color tfplan
 elif [[ "${direction}" == "down" ]]; then
-  terraform plan -destroy -var-file=tfvars.json -out=tfdestroy ${tfPath}
-  terraform apply tfdestroy
+  terraform plan --no-color -destroy -var-file=tfvars.json -out=tfdestroy ${tfPath}
+  terraform apply --no-color tfdestroy
 else
   echo "Unsupported direction: ${direction}."
   exit 1

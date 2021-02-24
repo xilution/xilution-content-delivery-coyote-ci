@@ -10,10 +10,10 @@ stageName=${STAGE_NAME}
 pipelineIdShort=$(echo "${pipelineId}" | cut -c1-8)
 stageNameLower=$(echo "${stageName}" | tr '[:upper:]' '[:lower:]')
 
-sourceCodeBucket="s3://xilution-coyote-${pipelineIdShort}-source-code/"
+sourceBucket="s3://xilution-coyote-${pipelineIdShort}-source-code/"
 webContentZipFileName="${sourceVersion}-${stageNameLower}-web-content.zip"
 
-aws s3 cp "${sourceCodeBucket}${webContentZipFileName}" .
+aws s3 cp "${sourceBucket}${webContentZipFileName}" .
 
 mkdir -p ./temp
 mv ./${webContentZipFileName} ./temp
@@ -23,5 +23,8 @@ rm -rf ./${webContentZipFileName}
 
 webContentBucket="s3://xilution-coyote-${pipelineIdShort}-${stageNameLower}-web-content"
 aws s3 cp . "${webContentBucket}" --recursive --include "*" --acl public-read
+
+cd ../
+rm -rf ./temp
 
 echo "All Done!"

@@ -57,7 +57,7 @@ resource "aws_cloudwatch_event_target" "cloudwatch-event-target" {
 
 # Dashboards
 
-resource "aws_cloudwatch_dashboard" "cloudwatch-dashboard" {
+resource "aws_cloudwatch_dashboard" "coyote-cloudwatch-dashboard" {
   dashboard_name = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-dashboard"
 
   dashboard_body = <<-EOF

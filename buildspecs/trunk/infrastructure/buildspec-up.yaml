@@ -10,5 +10,5 @@ phases:
       - . ./scripts/export-terraform-vars.sh trunk
   build:
     commands:
-      - ./scripts/terraform.sh trunk up $TERRAFORM_PATH terraform.tfstate $TERRAFORM_PROVIDER
-      - ./scripts/terraform.sh trunk up $ADD_INFRA_TERRAFORM_PATH_TRUNK additional-infrastructure.tfstate $TERRAFORM_PROVIDER
+      - ./scripts/terraform.sh trunk up $TERRAFORM_PATH terraform.tfstate $TERRAFORM_PROVIDER content-delivery coyote
+      - ./scripts/terraform.sh trunk up $ADD_INFRA_TERRAFORM_PATH_TRUNK additional-infrastructure.tfstate $TERRAFORM_PROVIDER content-delivery coyote

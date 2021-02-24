@@ -8,9 +8,8 @@ phases:
     commands:
       - ./scripts/echo-brand.sh
       - export PIPELINE_ID=$COYOTE_PIPELINE_ID
-      - export PRODUCT_CODE=xilution-content-delivery-coyote
       - . ./scripts/export-xilution-config.sh
   build:
     commands:
-      - ./scripts/validate-config.sh
+      - ./scripts/validate-config.sh xilution-content-delivery-coyote
       - ./scripts/verify.sh

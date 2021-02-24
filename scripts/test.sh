@@ -11,17 +11,17 @@
 
 stageName=${STAGE_NAME}
 sourceDir=${CODEBUILD_SRC_DIR_SourceCode}
+pipelineId=${PIPELINE_ID}
 currentDir=$(pwd)
 xilutionConfig=${XILUTION_CONFIG}
-pipelineId=${PIPELINE_ID}
 awsRegion=${CLIENT_AWS_REGION}
 pipelineType=${PIPELINE_TYPE}
 
 echo "stageName = ${stageName}"
 echo "sourceDir = ${sourceDir}"
+echo "pipelineId = ${pipelineId}"
 echo "currentDir = ${currentDir}"
 echo "xilutionConfig = ${xilutionConfig}"
-echo "pipelineId = ${pipelineId}"
 echo "awsRegion = ${awsRegion}"
 echo "pipelineType = ${pipelineType}"
 
@@ -42,13 +42,12 @@ fi
 
 echo "baseUrl = ${baseUrl}"
 
-wait_for_site_to_be_ready "${baseUrl}"
-
 cd "${sourceDir}" || false
 
-testDetails=$(echo "${xilutionConfig}" | base64 --decode | jq -r ".tests.${stageName}[] | @base64")
+testDetails=$(echo "${xilutionConfig}" | base64 --decode | jq -r ".tests.${stageNameLower}[]? | @base64")
 
 for testDetail in ${testDetails}; do
+  wait_for_site_to_be_ready "${baseUrl}"
   testName=$(echo "${testDetail}" | base64 --decode | jq -r ".name?")
   echo "Running: ${testName}"
   commands=$(echo "${testDetail}" | base64 --decode | jq -r ".commands[]? | @base64")
