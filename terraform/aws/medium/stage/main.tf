@@ -105,3 +105,9 @@ resource "aws_cloudfront_distribution" "cloudfront-distribution" {
     cloudfront_default_certificate = true
   }
 }
+
+resource "aws_ssm_parameter" "cloudfront-distribution-id" {
+  name  = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-${lower(var.stage_name)}-cloudfront-distribution-id"
+  type  = "String"
+  value = aws_cloudfront_distribution.cloudfront-distribution.id
+}
