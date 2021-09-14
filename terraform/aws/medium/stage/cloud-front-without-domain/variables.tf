@@ -48,8 +48,3 @@ variable "pipeline_type" {
   type        = string
   description = "The Pipeline Type"
 }
-
-variable "domain" {
-  type        = string
-  description = "The Site Domain"
-}
