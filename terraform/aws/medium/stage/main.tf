@@ -1,5 +1,5 @@
 module "cloud-front-with-domain" {
-  count                = var.domain ? 1 : 0
+  count                = try(trimspace(var.domain), "") != "" ? 1 : 0
   source               = "./cloud-front-with-domain"
   client_aws_account   = var.client_aws_account
   client_aws_region    = var.client_aws_region
@@ -14,7 +14,7 @@ module "cloud-front-with-domain" {
 }
 
 module "cloud-front-without-domain" {
-  count                = var.domain ? 0 : 1
+  count                = try(trimspace(var.domain), "") == "" ? 0 : 1
   source               = "./cloud-front-without-domain"
   client_aws_account   = var.client_aws_account
   client_aws_region    = var.client_aws_region
