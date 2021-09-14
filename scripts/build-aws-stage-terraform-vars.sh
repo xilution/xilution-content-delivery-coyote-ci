@@ -20,7 +20,7 @@ cat <<EOF >./tfvars.json
   "xilution_aws_account": "$XILUTION_AWS_ACCOUNT",
   "xilution_aws_region": "$XILUTION_AWS_REGION",
   "xilution_environment": "$XILUTION_ENVIRONMENT",
-  "stage_name": "$STAGE_NAME"
+  "stage_name": "$STAGE_NAME",
   "domain": "$DOMAIN"
 }
 EOF
