@@ -9,6 +9,18 @@
 [ -z "$XILUTION_AWS_REGION" ] && echo "Didn't find XILUTION_AWS_REGION env var." && exit 1
 [ -z "$XILUTION_ENVIRONMENT" ] && echo "Didn't find XILUTION_ENVIRONMENT env var." && exit 1
 [ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
+[ -z "$DOMAIN" ] && echo "Didn't find DOMAIN env var." && exit 1
+
+echo "XILUTION_ORGANIZATION_ID: ${XILUTION_ORGANIZATION_ID}"
+echo "PIPELINE_ID: ${PIPELINE_ID}"
+echo "PIPELINE_TYPE: ${PIPELINE_TYPE}"
+echo "CLIENT_AWS_ACCOUNT: ${CLIENT_AWS_ACCOUNT}"
+echo "CLIENT_AWS_REGION: ${CLIENT_AWS_REGION}"
+echo "XILUTION_AWS_ACCOUNT: ${XILUTION_AWS_ACCOUNT}"
+echo "XILUTION_AWS_REGION: ${XILUTION_AWS_REGION}"
+echo "XILUTION_ENVIRONMENT: ${XILUTION_ENVIRONMENT}"
+echo "STAGE_NAME: ${STAGE_NAME}"
+echo "DOMAIN: ${DOMAIN}"
 
 cat <<EOF >./tfvars.json
 {
