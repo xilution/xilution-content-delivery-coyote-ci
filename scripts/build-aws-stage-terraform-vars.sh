@@ -9,7 +9,7 @@
 [ -z "$XILUTION_AWS_REGION" ] && echo "Didn't find XILUTION_AWS_REGION env var." && exit 1
 [ -z "$XILUTION_ENVIRONMENT" ] && echo "Didn't find XILUTION_ENVIRONMENT env var." && exit 1
 [ -z "$STAGE_NAME" ] && echo "Didn't find STAGE_NAME env var." && exit 1
-[ -z "$DOMAIN" ] && echo "Didn't find DOMAIN env var." && exit 1
+#[ -z "$DOMAIN" ] && echo "Didn't find DOMAIN env var." && exit 1
 
 echo "XILUTION_ORGANIZATION_ID: ${XILUTION_ORGANIZATION_ID}"
 echo "PIPELINE_ID: ${PIPELINE_ID}"
