@@ -10,5 +10,5 @@ phases:
       - . ./scripts/export-terraform-vars.sh stage
   build:
     commands:
-      #      - ./scripts/terraform.sh stage down $ADD_INFRA_TERRAFORM_PATH_STAGE additional-infrastructure.tfstate $TERRAFORM_PROVIDER content-delivery coyote
+      - ./scripts/terraform.sh stage down $ADD_INFRA_TERRAFORM_PATH_STAGE additional-infrastructure.tfstate $TERRAFORM_PROVIDER content-delivery coyote
       - ./scripts/terraform.sh stage down $TERRAFORM_PATH terraform.tfstate $TERRAFORM_PROVIDER content-delivery coyote
