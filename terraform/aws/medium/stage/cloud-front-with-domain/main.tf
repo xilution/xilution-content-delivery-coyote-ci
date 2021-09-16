@@ -9,20 +9,19 @@ resource "aws_s3_bucket" "static_content_bucket" {
 
 locals {
   s3_origin_id = aws_s3_bucket.static_content_bucket.id
-  aliases      = compact(concat(["${var.stage_name}.${var.domain}"], [var.stage_name == "prod" ? var.domain : null]))
 }
 
 resource "aws_acm_certificate" "certificate" {
-  domain_name               = var.domain
-  subject_alternative_names = local.aliases
+  domain_name               = "${var.stage_name}.${var.domain}"
+  subject_alternative_names = compact([var.stage_name == "prod" ? var.domain : null])
   validation_method         = "DNS"
-
-  tags = {
-    originator = "xilution.com"
-  }
 
   lifecycle {
     create_before_destroy = true
+  }
+
+  tags = {
+    originator = "xilution.com"
   }
 }
 
@@ -49,6 +48,11 @@ resource "aws_route53_record" "cert-validation-records" {
   ttl             = 60
   type            = each.value.type
   zone_id         = data.aws_route53_zone.route53_zone.zone_id
+}
+
+resource "aws_acm_certificate_validation" "cert-validation" {
+  certificate_arn         = aws_acm_certificate.certificate.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert-validation-records : record.fqdn]
 }
 
 resource "aws_cloudfront_distribution" "cloudfront-distribution" {
@@ -141,7 +145,7 @@ resource "aws_cloudfront_distribution" "cloudfront-distribution" {
     name       = local.s3_origin_id
   }
 
-  aliases = local.aliases
+  aliases = compact(concat(["${var.stage_name}.${var.domain}"], [var.stage_name == "prod" ? var.domain : null]))
 
   viewer_certificate {
     acm_certificate_arn = aws_acm_certificate.certificate.arn
