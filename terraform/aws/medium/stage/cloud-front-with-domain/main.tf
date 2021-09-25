@@ -21,6 +21,7 @@ resource "aws_acm_certificate" "certificate" {
   }
 
   tags = {
+    Name       = "${var.stage_name}.${var.domain}"
     originator = "xilution.com"
   }
 }
