@@ -42,12 +42,13 @@ fi
 
 echo "baseUrl = ${baseUrl}"
 
+export SITE_BASE_URL=${baseUrl}
+
 cd "${sourceDir}" || false
 
 testDetails=$(echo "${xilutionConfig}" | base64 --decode | jq -r ".tests.${stageNameLower}[]? | @base64")
 
 for testDetail in ${testDetails}; do
-  wait_for_site_to_be_ready "${baseUrl}"
   testName=$(echo "${testDetail}" | base64 --decode | jq -r ".name?")
   echo "Running: ${testName}"
   commands=$(echo "${testDetail}" | base64 --decode | jq -r ".commands[]? | @base64")
