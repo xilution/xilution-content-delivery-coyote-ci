@@ -1,3 +1,12 @@
+# Locals
+
+locals {
+  s3_origin_id = aws_s3_bucket.static_content_bucket.id
+  prodCount = var.stage_name == "prod" ? 1 : 0
+}
+
+# Static Content Bucket
+
 resource "aws_s3_bucket" "static_content_bucket" {
   bucket        = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-${lower(var.stage_name)}-web-content"
   acl           = "private"
@@ -7,9 +16,17 @@ resource "aws_s3_bucket" "static_content_bucket" {
   }
 }
 
-locals {
-  s3_origin_id = aws_s3_bucket.static_content_bucket.id
+# Route 53 Zone
+
+data "aws_ssm_parameter" "route53_zone_id" {
+  name = "${var.domain}_route53-hosted-zone-name"
 }
+
+data "aws_route53_zone" "route53_zone" {
+  name = data.aws_ssm_parameter.route53_zone_id.value
+}
+
+# Site Custom Domain Certificate and Validation
 
 resource "aws_acm_certificate" "certificate" {
   domain_name               = "${var.stage_name}.${var.domain}"
@@ -24,14 +41,6 @@ resource "aws_acm_certificate" "certificate" {
     Name       = "${var.stage_name}.${var.domain}"
     originator = "xilution.com"
   }
-}
-
-data "aws_ssm_parameter" "route53_zone_id" {
-  name = "${var.domain}_route53-hosted-zone-name"
-}
-
-data "aws_route53_zone" "route53_zone" {
-  name = data.aws_ssm_parameter.route53_zone_id.value
 }
 
 resource "aws_route53_record" "cert-validation-records" {
@@ -55,6 +64,8 @@ resource "aws_acm_certificate_validation" "cert-validation" {
   certificate_arn         = aws_acm_certificate.certificate.arn
   validation_record_fqdns = [for record in aws_route53_record.cert-validation-records : record.fqdn]
 }
+
+# CloudFront Distribution
 
 resource "aws_cloudfront_distribution" "cloudfront-distribution" {
   comment = local.s3_origin_id
@@ -158,4 +169,31 @@ resource "aws_ssm_parameter" "cloudfront-distribution-id" {
   name  = "xilution-coyote-${substr(var.pipeline_id, 0, 8)}-${lower(var.stage_name)}-cloudfront-distribution-id"
   type  = "String"
   value = aws_cloudfront_distribution.cloudfront-distribution.id
+}
+
+# Site Custom Domain Route 53 Records
+
+resource "aws_route53_record" "route53_record" {
+  count   = local.prodCount
+  name    = "${var.domain}."
+  type    = "A"
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+
+  alias {
+    name                   = aws_cloudfront_distribution.cloudfront-distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.cloudfront-distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "route53_record_stage" {
+  name    = "${lower(var.stage_name)}.${var.domain}."
+  type    = "A"
+  zone_id = data.aws_route53_zone.route53_zone.zone_id
+
+  alias {
+    name                   = aws_cloudfront_distribution.cloudfront-distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.cloudfront-distribution.hosted_zone_id
+    evaluate_target_health = false
+  }
 }
